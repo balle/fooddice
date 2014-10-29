@@ -1,4 +1,5 @@
-;; fooddice.el --- Help me I am hungry and dont know what to eat!
+;;; fooddice.el --- Help me I am hungry and dont know what to eat!
+
 ;; Copyright (C) 2014 Bastian Ballmann
 
 ;; Author: Bastian Ballmann <balle@codekid.net>
