@@ -83,17 +83,17 @@
 (defun what-to-eat ()
   "Tell me what to eat"
   (interactive)
-  (message (concat "What about " (fooddice/dice 'fooddice/meals) "?")))
+  (message "What about %s?" (fooddice/dice 'fooddice/meals)))
 
 (defun where-to-eat ()
   "Decide where I should go eating"
   (interactive)
-  (message (concat "What about " (fooddice/dice 'fooddice/restaurants) "?")))
+  (message "What about %s?" (fooddice/dice 'fooddice/restaurants)))
 
 (defun what-to-drink ()
   "What would you drink?"
   (interactive)
-  (message (concat "I would drink a " (fooddice/dice 'fooddice/drinks))))
+  (message "I would drink a %s" (fooddice/dice 'fooddice/drinks)))
 
 (defun fooddice/dice (list-sym)
   (let ((current-list (get list-sym 'food-list)))
