@@ -48,29 +48,61 @@
 
 ;;; Code:
 
-(setq fooddice/meals '(pizza pommes burger noodles bread soup chinese sushi))
-(setq fooddice/drinks '(cola water coffee tea beer whisky milk cacao icetea energydrink))
-(setq fooddice/restaurants '(italian chinese thai american japanese))
+(defun fooddice/set-custom (variable value)
+  "Set the default value of the variable, and clear the random cache"
+  (put variable 'food-list nil)
+  (set-default variable value))
+
+(defgroup fooddice nil
+  "Let Emacs suggest what to eat"
+  :group 'games)
+
+(defcustom fooddice/meals
+  '("pizza" "pommes" "burger" "noodles" "bread" "soup" "chinese" "sushi")
+  "A list of meals"
+  :type '(repeat string)
+  :set #'fooddice/set-custom
+  :group 'fooddice)
+
+(defcustom fooddice/drinks
+  '("cola" "water" "coffee" "tea" "beer" "whisky" "milk" "cacao" "ice tea" "energy drink")
+  "A list of drinks"
+  :type '(repeat string)
+  :set #'fooddice/set-custom
+  :group 'fooddice)
+
+(defcustom fooddice/restaurants
+  '("italian" "chinese" "thai" "american" "japanese")
+  "A list of restaurants"
+  :type '(repeat string)
+  :set #'fooddice/set-custom
+  :group 'fooddice)
 
 (defun what-to-eat ()
   "Tell me what to eat"
   (interactive)
-  (message (concat "What about " (fooddice/dice fooddice/meals) "?")))
+  (message "What about %s?" (fooddice/dice 'fooddice/meals)))
 
 (defun where-to-eat ()
   "Decide where I should go eating"
   (interactive)
-  (message (concat "What about " (fooddice/dice fooddice/restaurants) "?")))
+  (message "What about %s?" (fooddice/dice 'fooddice/restaurants)))
 
 (defun what-to-drink ()
   "What would you drink?"
   (interactive)
-  (message (concat "I would drink a " (fooddice/dice fooddice/drinks))))
+  (message "I would drink a %s" (fooddice/dice 'fooddice/drinks)))
 
-(defun fooddice/dice (mylist)
-  (let* ((mynr (random (length mylist)))
-        (myfood (symbol-name (nth mynr mylist))))
-    myfood))
+(defun fooddice/dice (list-sym)
+  (let ((current-list (get list-sym 'food-list)))
+    (if current-list
+        (put list-sym 'food-list (cdr current-list))
+      (setq current-list (sort
+                          ;; Make a copy of the list
+                          (mapcar 'identity (symbol-value list-sym))
+                          (lambda (&rest _) (zerop (random 2)))))
+      (put list-sym 'food-list (cdr current-list)))
+    (car current-list)))
 
 (provide 'fooddice)
 ;;; fooddice.el ends here
