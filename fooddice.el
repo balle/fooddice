@@ -48,8 +48,6 @@
 
 ;;; Code:
 
-(require 'cl-lib)
-
 (defun fooddice/set-custom (variable value)
   "Set the default value of the variable, and clear the random cache"
   (put variable 'food-list nil)
@@ -100,7 +98,8 @@
     (if current-list
         (put list-sym 'food-list (cdr current-list))
       (setq current-list (sort
-                          (cl-copy-list (symbol-value list-sym))
+                          ;; Make a copy of the list
+                          (mapcar 'identity (symbol-value list-sym))
                           (lambda (&rest _) (zerop (random 2)))))
       (put list-sym 'food-list (cdr current-list)))
     (car current-list)))
